@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<script src="js/jquery-2.1.3.min.js"></script>
+<link rel="stylesheet" href="css/sample.css">
+<title>じゃんけん</title>
+</head>
+<body>
+
+<header>
+  <h1>じゃんけん</h1>
+</header>
+
+<main>
+  
+  <div class="contents">
+    <div class="item" id="gu_btn">
+      <img class="image" src="./img/janken_gu.png" >
+      <div class="middle">
+        <div class="image_text" >グーを出す</div>
+      </div>
+    </div>
+    <div class="item" id="cho_btn">
+      <img class="image" src="./img/janken_choki.png" >
+      <div class="middle">
+        <div class="image_text" >チョキを出す</div>
+      </div>
+    </div>
+    <div class="item" id="par_btn">
+      <img class="image" src="./img/janken_pa.png" >
+      <div class="middle">
+        <div class="image_text" >パーを出す</div>
+      </div>
+    </div>
+  </div>
+  <div class="contents">
+    <div class="content" >
+      <div><p>所持金</p></div>
+      <div id="money_left">円</div>
+    </div>
+    <div class="content" >
+      <div><p>賭け金</p></div>
+      <button class="btn" type="button" id="bid_up"><span>▲</span></button>
+      <div id="bid_now">円</div>
+      <button class="btn" type="button" id="bid_down"><span>▼</span⇩></button>
+    </div>
+  </div>
+  
+</main>
+<div class="popup-background"></div>
+<div class="popup-content" id="judge-popup">
+  <div>
+    
+    <div>コンピュータの出した手は？「<span id="pc_hands">なに？</span>」</div>
+    <div id="judgment" class="judgment"></div>
+    <span>現在の所持金は...</span>
+    <div id="money_left">円</div>
+    <button class="btn" type="button" id="onemore_button"><span>もう一回</span></button>
+
+  </div>
+</div>
+
+<script>
+//じゃんけん用のSCRIPTを書いてください
+
+var money = 1000;
+var bid = 100;
+var diff = 100;
+//0:グー 1:チョキ 2:パー
+var hands = {
+  gu_btn : 0,
+  cho_btn : 1,
+  par_btn : 2
+};
+var winlose = {
+  0: "あいこ",
+  1: "負け",
+  2: "勝ち"
+};
+var num_to_hand = {
+  0: "グー",
+  1: "チョキ",
+  2: "パー"
+};
+
+$("#bid_now").text(bid+"円");
+$("#money_left").text(money+"円");
+$("#gu_btn,#cho_btn,#par_btn").on("click", function(){
+     $('.popup-background').addClass('visible');
+     $('#judge-popup').addClass('visible');
+  
+
+  var pchand_num = Math.floor(Math.random() * 3); //乱数生成
+  $("#pc_hands").text(num_to_hand[pchand_num]); //乱数→出した手
+  var winlose_result = (hands[this.id]- pchand_num + 3) % 3//クリックしたボタンとPCの手の判定(数字に)
+  $("#judgment").text(winlose[winlose_result]); 
+  $("#money_left").text(money+"円");
+  if (winlose_result == 2) {
+    $("#judgment").addClass("transition"); 
+    money = money + bid;
+    
+  };
+  if (winlose_result == 1) {
+    $("#judgment").addClass("losetransition"); 
+    money = money - bid;
+    
+  };
+  $("[id=money_left]").text(money+"円");
+});
+$("#onemore_button").on("click",function(){
+  $('.popup-background').removeClass('visible');
+  $('#judge-popup').removeClass('visible');
+  $("#judgment").removeClass("transition" ); 
+  $("#judgment").removeClass("losetransition" ); 
+  $("#judgment").text(""); 
+});
+$("#bid_up").on("click",function(){
+  if (bid+diff<=money) {
+    bid=bid+diff;
+    $("#bid_now").text(bid+"円");
+    
+  }
+  else{
+    alert("もうこれ以上賭けられない！");
+  }
+});
+$("#bid_down").on("click",function(){
+  if (bid-diff>0) {
+    bid=bid-diff;
+    $("#bid_now").text(bid+"円");
+  }
+  else{
+    alert("最低金額は100円から！");
+  }
+});
+
+
+</script>
+</body>
+</html>
